@@ -17,6 +17,9 @@ def run_bot():
     # channel_id must be int for client.get_channel()
     CHANNEL = int(os.getenv('CHANNEL_ID'))
 
+    TENOR_API = os.getenv('TENOR_API_KEY')
+    TENOR_CLIENT = os.getenv('TENOR_API_CLIENT')
+
     intents = discord.Intents.default()
     # have to toggle 'message content intent' in Bot settings on Discord dev portal
     intents.message_content = True
@@ -40,9 +43,8 @@ def run_bot():
     async def on_member_join(member):
         print('new channel member!')
         channel = client.get_channel(CHANNEL)
-        await channel.send(
-            get_gif()
-        )
+        gif = await get_gif(TENOR_API, TENOR_CLIENT)
+        await channel.send(gif)
 
     @client.event
     async def on_message(message):
@@ -56,22 +58,23 @@ def run_bot():
             if user_message.lower() == 'hello':
                 await message.channel.send(f'Hello {username}')
             elif user_message.lower() == 'greetings':
-                await message.channel.send(get_gif())
+                gif = await get_gif(TENOR_API, TENOR_CLIENT)
+                await message.channel.send(gif)
             elif user_message.lower() == 'quote':
                 await message.channel.send(get_quote())
 
     client.run(TOKEN)
 
 
-def get_gif():
-    api_key = os.getenv('TENOR_API_KEY')
-    client_key = os.getenv('TENOR_API_CLIENT')
-
+async def get_gif(api, client):
     r = requests.get(
-        f"https://tenor.googleapis.com/v2/search?q={get_gif_params()}&key={api_key}&client_key={client_key}&limit=1"
+        f"https://tenor.googleapis.com/v2/search?q={get_gif_params()}&key={api}&client_key={client}&limit=1"
     )
+
     if r.status_code == 200:
-        return json.loads(r.content)['results'][0]["media_formats"]["mediumgif"]['url']
+        gif = json.loads(r.content)[
+            'results'][0]["media_formats"]["mediumgif"]['url']
+        return gif
 
 
 def get_gif_params():
