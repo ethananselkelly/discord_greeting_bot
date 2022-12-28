@@ -56,22 +56,38 @@ def run_bot():
             if user_message.lower() == 'hello':
                 await message.channel.send(f'Hello {username}')
             elif user_message.lower() == 'greetings':
-                await message.channel.send(get_gif())
+                gif = await get_gif()
+                print(gif)
+                await message.channel.send(gif)
+                # await message.channel.send(get_gif())
             elif user_message.lower() == 'quote':
                 await message.channel.send(get_quote())
 
     client.run(TOKEN)
 
 
-def get_gif():
+async def get_gif():
     api_key = os.getenv('TENOR_API_KEY')
     client_key = os.getenv('TENOR_API_CLIENT')
 
     r = requests.get(
         f"https://tenor.googleapis.com/v2/search?q={get_gif_params()}&key={api_key}&client_key={client_key}&limit=1"
     )
+    print(r.status_code)
+    # if r.status_code == 200:
+    #     try:
+    #         r = json.loads(r.content)[
+    #             'results'][0]["media_formats"]["mediumgif"]['url']
+    #         return r
+    #     except KeyError:
+    #         r = 'gif not found'
+    # return r
     if r.status_code == 200:
-        return json.loads(r.content)['results'][0]["media_formats"]["mediumgif"]['url']
+        gif = json.loads(r.content)[
+            'results'][0]["media_formats"]["mediumgif"]['url']
+        return gif
+    # return json.loads(r.content)['results'][0]["media_formats"]["mediumgif"]['url']
+    # return gif
 
 
 def get_gif_params():
