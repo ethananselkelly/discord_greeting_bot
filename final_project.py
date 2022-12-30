@@ -15,8 +15,8 @@ def run_bot():
     TOKEN = os.getenv('DISCORD_TOKEN')
     GUILD = os.getenv('DISCORD_GUILD')
     # channel_id must be int for client.get_channel()
-    CHANNEL = int(os.getenv('CHANNEL_ID'))
-
+    CHANNEL_ID = int(os.getenv('CHANNEL_ID'))
+    CHANNEL_NAME = os.getenv('CHANNEL_NAME')
     TENOR_API = os.getenv('TENOR_API_KEY')
     TENOR_CLIENT = os.getenv('TENOR_API_CLIENT')
 
@@ -35,6 +35,7 @@ def run_bot():
         print(
             f'{client.user} has connected to Discord Server:\n'
             f'{guild.name} (id: {guild.id})\n'
+            # f'{guild.channels}'
         )
 
         return guild
@@ -42,7 +43,7 @@ def run_bot():
     @client.event
     async def on_member_join(member):
         print('new channel member!')
-        channel = client.get_channel(CHANNEL)
+        channel = client.get_channel(CHANNEL_ID)
         gif = await get_gif(TENOR_API, TENOR_CLIENT)
         await channel.send(gif)
 
@@ -54,7 +55,7 @@ def run_bot():
         if message.author == client.user:
             return
 
-        if message.channel.name == 'general':
+        if message.channel.name == CHANNEL_NAME:
             if user_message.lower() == 'hello':
                 await message.channel.send(f'Hello {username}')
             elif user_message.lower() == 'greetings':
