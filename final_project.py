@@ -6,19 +6,22 @@ import discord
 from dotenv import load_dotenv
 
 
+load_dotenv()
+TOKEN = os.getenv('DISCORD_TOKEN')
+GUILD = os.getenv('DISCORD_GUILD')
+# channel_id must be int for client.get_channel()
+CHANNEL_ID = int(os.getenv('CHANNEL_ID'))
+CHANNEL_NAME = os.getenv('CHANNEL_NAME')
+TENOR_API = os.getenv('TENOR_API_KEY')
+TENOR_CLIENT = os.getenv('TENOR_API_CLIENT')
+BEARER_TOKEN = os.getenv('TWITTER_BEARER_TOKEN')
+
+
 def main():
     run_bot()
 
 
 def run_bot():
-    load_dotenv()
-    TOKEN = os.getenv('DISCORD_TOKEN')
-    GUILD = os.getenv('DISCORD_GUILD')
-    # channel_id must be int for client.get_channel()
-    CHANNEL_ID = int(os.getenv('CHANNEL_ID'))
-    CHANNEL_NAME = os.getenv('CHANNEL_NAME')
-    TENOR_API = os.getenv('TENOR_API_KEY')
-    TENOR_CLIENT = os.getenv('TENOR_API_CLIENT')
 
     intents = discord.Intents.default()
     # have to toggle 'message content intent' in Bot settings on Discord dev portal
@@ -62,7 +65,7 @@ def run_bot():
                 gif = await get_gif(TENOR_API, TENOR_CLIENT)
                 await message.channel.send(gif)
             elif user_message.lower() == 'quote':
-                await message.channel.send(get_quote())
+                await message.channel.send(get_random_tweet(get_tweet(bearer_oauth)))
 
     client.run(TOKEN)
 
@@ -95,10 +98,48 @@ def get_gif_params():
     ]
     return random.choice(search_terms)
 
+# TWITTER API STUFF
 
-def get_quote():
-    r = requests.get('https://thesimpsonsquoteapi.glitch.me/quotes').json()
-    return f"{r[0]['quote']} - {r[0]['character']}"
+
+def bearer_oauth(r):
+    r.headers['Authorization'] = f'Bearer {BEARER_TOKEN}'
+    r.headers['User-Agent'] = 'v2UserTweetsPython'
+    return r
+
+
+def random_date():
+    # RFC3339 date-time format for end_date of retrieved tweets
+    # Seems that request will return 0 results (status 200) if date is before 2020. Don't know why that is...
+    year = random.randrange(2020, 2022)
+    month = f'{random.randrange(1, 12):02d}'
+    if month == 2:
+        day = f'{random.randrange(1, 28):02d}'
+    elif month == 4 or 6 or 9 or 11:
+        day = f'{random.randrange(1, 30):02d}'
+    else:
+        day = f'{random.randrange(1, 31):02d}'
+    return (str(year) + '-' + str(month) + '-' + str(day) + 'T00:00:00Z')
+
+
+def get_tweet(bearer):
+    params = {
+        'max_results': 10,
+        'end_time': random_date(),
+        'exclude': 'retweets',
+    }
+    r = requests.get('https://api.twitter.com/2/users/1094922224/tweets',
+                     auth=bearer, params=params)
+    if r.status_code != 200:
+        raise Exception(r.status_code, r.text)
+    return r.json()
+
+
+def get_random_tweet(tweets):
+    try:
+        tweet_id = random.choice(tweets['data'])['id']
+        return f'https://twitter.com/twitter/status/{tweet_id}'
+    except KeyError:
+        return KeyError
 
 
 if __name__ == "__main__":
