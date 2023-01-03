@@ -43,5 +43,3 @@
 ### TODO:
 
 ### -Use Discord commands (!command syntax) to avoid accidentally triggering an event response by Hank
-
-### -Deploy Hank to a cloud server so that it can stay up and running without needing to run on my local machine
