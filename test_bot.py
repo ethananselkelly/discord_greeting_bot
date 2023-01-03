@@ -1,4 +1,4 @@
-from final_project import get_gif, get_gif_params, get_tweet, get_random_tweet, bearer_oauth
+from bot import get_gif, get_gif_params, get_tweet, get_random_tweet, bearer_oauth
 import re
 import pytest
 from dotenv import load_dotenv
