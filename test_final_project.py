@@ -33,4 +33,4 @@ def test_random_tweet():
     assert type(tweet) == str
     assert 'twitter.com' in tweet
     assert re.match(
-        r"^https:\/\/twitter.com\/twitter\/status\/\d+$", tweet)
+        r"^https:\/\/fxtwitter.com\/twitter\/status\/\d+$", tweet)

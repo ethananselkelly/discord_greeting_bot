@@ -1,16 +1,14 @@
 # Discord Greeting Bot AKA Hank Scorpio
 
-## Video Demo: <https://youtu.be/1RwvoXKCZus>
-
 ## Description: Hank uses the Discord API via discord.py to welcome new users to a Discord server
 
 ### When a new user joins the Discord server, the event triggers Hank to make a GET request to the Tenor (gif) API for a Simpsons-related greeting, which he then sends to the Discord server's general text channel.
 
-### Hank can also make a GET request to the Simpsons quote API and send the quote as a message in the text channel.
+### Hank can also make a GET request to the Twitter API and send a random tweet from user @SimpsonsQOTD as a message in the text channel.
 
 ---
 
-## The main file for Hank is final_project.py, and is made up of 4 main functions: run_bot(), get_gif(), get_gif_params(), and get_quote().
+## The main file for Hank is final_project.py, and is made up of 4 main functions: run_bot(), get_gif(), get_gif_params(), and get_tweet().
 
 ---
 
@@ -34,7 +32,7 @@
 
 ---
 
-### get_quote() makes a request to the Simpsons quote API for a random quote. The response is an array of quotes (only one is returned here) and the quote along with it's character is returned as an f string
+### get_tweet() makes a request to the Twitter API for a selection of tweets from user @SimpsonsQOTD. The response is a dict with a list of tweets, which is then given to get_random_tweet() to pick out a random list item and send the correct url to the Discord text channel so that it renders the tweet to be viewed
 
 ---
 
@@ -43,8 +41,6 @@
 ---
 
 ### TODO:
-
-### -Implement Twitter API to GET random tweets from user @SimpsonsQOTD
 
 ### -Use Discord commands (!command syntax) to avoid accidentally triggering an event response by Hank
 

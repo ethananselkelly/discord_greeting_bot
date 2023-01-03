@@ -137,7 +137,7 @@ def get_tweet(bearer):
 def get_random_tweet(tweets):
     try:
         tweet_id = random.choice(tweets['data'])['id']
-        return f'https://twitter.com/twitter/status/{tweet_id}'
+        return f'https://fxtwitter.com/twitter/status/{tweet_id}'
     except KeyError:
         return KeyError
 
