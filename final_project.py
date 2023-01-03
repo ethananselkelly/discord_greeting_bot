@@ -101,12 +101,6 @@ def get_gif_params():
 # TWITTER API STUFF
 
 
-def bearer_oauth(r):
-    r.headers['Authorization'] = f'Bearer {BEARER_TOKEN}'
-    r.headers['User-Agent'] = 'v2UserTweetsPython'
-    return r
-
-
 def random_date():
     # RFC3339 date-time format for end_date of retrieved tweets
     # Seems that request will return 0 results (status 200) if date is before 2020. Don't know why that is...
@@ -119,6 +113,12 @@ def random_date():
     else:
         day = f'{random.randrange(1, 31):02d}'
     return (str(year) + '-' + str(month) + '-' + str(day) + 'T00:00:00Z')
+
+
+def bearer_oauth(r):
+    r.headers['Authorization'] = f'Bearer {BEARER_TOKEN}'
+    r.headers['User-Agent'] = 'v2UserTweetsPython'
+    return r
 
 
 def get_tweet(bearer):
