@@ -61,10 +61,10 @@ def run_bot():
         if message.channel.name == CHANNEL_NAME:
             if 'hello' in user_message.lower():
                 await message.channel.send(f'Hello {username}')
-            elif 'greetings' in user_message.lower():
+            elif user_message.lower().startswith('!greetings'):
                 gif = await get_gif(TENOR_API, TENOR_CLIENT)
                 await message.channel.send(gif)
-            elif 'quote' in user_message.lower():
+            elif user_message.lower().startswith('!quote'):
                 await message.channel.send(get_random_tweet(get_tweet(bearer_oauth)))
 
     client.run(TOKEN)
